@@ -12,8 +12,8 @@
         {{ post.content|safe }}
     {% endcol %}
 {% endrow %}
-<h4></h4>
-{% row %}
+{% include "blog/post-comments.html" %}
+{% row "mt" %}
     {% col %}
         {% recent_posts post %}
     {% endcol %}

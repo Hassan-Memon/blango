@@ -19,9 +19,17 @@ class CommentSerilizer(serializers.ModelSerializer):
       fields = ['id', 'creator', 'content', 'modified_at', 'created_at']
       readonly = ['modified_at', 'created_at']
 
+class TagField(serializers.SlugRelatedField):
+    def to_internal_value(self, data):
+        try:
+          return self.get_queryset().get_or_create(value=data.lower())[0]
+        except (TypeError, ValueError):
+          self.fail(f"Tag value {data} is invalid")
+
+
 class PostSerializer(serializers.ModelSerializer):
 
-    tags = serializers.SlugRelatedField(
+    tags = TagField(
       slug_field='value', many=True, queryset=Tag.objects.all()
     )
     author = serializers.HyperlinkedRelatedField(
@@ -33,13 +41,6 @@ class PostSerializer(serializers.ModelSerializer):
         fields = '__all__'
         readonly = ['modified_at', 'created_at']
 
-
-class TagField(serializers.SlugRelatedField):
-    def to_internal_value(self, data):
-        try:
-          return self.get_queryset().get_or_create(value=data.lower())[0]
-        except (TypeError, ValueError):
-          self.fail(f"Tag value {data} is invalid")
 
 
 class PostDetailSerializer(PostSerializer):
@@ -54,10 +55,10 @@ class PostDetailSerializer(PostSerializer):
             if comment_data.get('id'):
                 continue
           
-        comment = Comment(**comment_data)
-        comment.creator = self.context['request'].user
-        comment.content_object = instance
-        comment.save()
+            comment = Comment(**comment_data)
+            comment.creator = self.context['request'].user
+            comment.content_object = instance
+            comment.save()
         
         return instance
 

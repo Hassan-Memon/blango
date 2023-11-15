@@ -43,53 +43,80 @@
 // console.log("map function value")
 // console.log(double)
 
-class Greeter {
-  constructor(name) {
-    this.name = name
-  }
+// class Greeter {
+//   constructor(name) {
+//     this.name = name
+//   }
 
-  getGreeting() {
-    if (this.name === "undefined") {
-      return "Hello, no name"
-    }
-    return "Hello, " + this.name
-  }
+//   getGreeting() {
+//     if (this.name === "undefined") {
+//       return "Hello, no name"
+//     }
+//     return "Hello, " + this.name
+//   }
 
-  showGreeting(greetingMessage) {
-    console.log(greetingMessage)
-  }
+//   showGreeting(greetingMessage) {
+//     console.log(greetingMessage)
+//   }
 
-  greet() {
-    this.showGreeting(this.getGreeting())
-  }
+//   greet() {
+//     this.showGreeting(this.getGreeting())
+//   }
+// }
+
+// const g = new Greeter("Hassan")
+// g.greet()
+
+
+// class DelayedGreeter extends Greeter {
+//   delay = 2000
+
+//   constructor (name, delay) {
+//     super(name)
+
+//     if (delay !== undefined) {
+//       this.delay = delay
+//     }
+//   }
+
+//   greet () {
+//     setTimeout(
+//       () => {
+//         this.showGreeting(this.getGreeting())
+//       }, this.delay
+//     )
+//   }
+// }
+
+// const dg2 = new DelayedGreeter("Hassan 2 seconds")
+// dg2.greet()
+
+// const dg1 = new DelayedGreeter("Hassan 1 second", 1000)
+// dg1.greet()
+
+function resolveCallback(data) {
+  console.log("Resolved with data " + data)
 }
 
-const g = new Greeter("Hassan")
-g.greet()
-
-
-class DelayedGreeter extends Greeter {
-  delay = 2000
-
-  constructor (name, delay) {
-    super(name)
-
-    if (delay !== undefined) {
-      this.delay = delay
-    }
-  }
-
-  greet () {
-    setTimeout(
-      () => {
-        this.showGreeting(this.getGreeting())
-      }, this.delay
-    )
-  }
+function rejectCallback(message) {
+  console.log("Rejected with message: " + message)
 }
 
-const dg2 = new DelayedGreeter("Hassan 2 seconds")
-dg2.greet()
+const lazyAdd = (a, b) => {
+  const doAdd = (resolve, reject) => {
+    if (typeof a !== "number" || typeof b !== "number") {
+      reject("a and b must be type of number")
+    } else {
+      const result = a + b
+      resolve(result)
+    
+    }
+  }
+  return new Promise(doAdd)
 
-const dg1 = new DelayedGreeter("Hassan 1 second", 1000)
-dg1.greet()
+}
+
+const p = lazyAdd(3, 4)
+p.then(resolveCallback, rejectCallback)
+
+lazyAdd("non", "number").then(resolveCallback, rejectCallback)

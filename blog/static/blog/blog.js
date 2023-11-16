@@ -94,29 +94,67 @@
 // const dg1 = new DelayedGreeter("Hassan 1 second", 1000)
 // dg1.greet()
 
-function resolveCallback(data) {
-  console.log("Resolved with data " + data)
-}
+// function resolveCallback(data) {
+//   console.log("Resolved with data " + data)
+// }
 
-function rejectCallback(message) {
-  console.log("Rejected with message: " + message)
-}
+// function rejectCallback(message) {
+//   console.log("Rejected with message: " + message)
+// }
 
-const lazyAdd = (a, b) => {
-  const doAdd = (resolve, reject) => {
-    if (typeof a !== "number" || typeof b !== "number") {
-      reject("a and b must be type of number")
-    } else {
-      const result = a + b
-      resolve(result)
+// const lazyAdd = (a, b) => {
+//   const doAdd = (resolve, reject) => {
+//     if (typeof a !== "number" || typeof b !== "number") {
+//       reject("a and b must be type of number")
+//     } else {
+//       const result = a + b
+//       resolve(result)
     
-    }
-  }
-  return new Promise(doAdd)
+//     }
+//   }
+//   return new Promise(doAdd)
 
+// }
+
+// const p = lazyAdd(3, 4)
+// p.then(resolveCallback, rejectCallback)
+
+// lazyAdd("non", "number").then(resolveCallback, rejectCallback)
+
+class ClickButton extends React.Component {
+  state = {
+    wasClicked: false
+  }
+
+  handleClick () {
+    this.setState(
+      {wasClicked: true}
+    )
+  }
+
+  render () {
+    let buttonText
+
+    if (this.state.wasClicked)
+      buttonText = 'Clicked!'
+    else
+      buttonText = 'Click Me'
+
+    return React.createElement(
+      'button',
+      {
+        className: 'btn btn-primary mt-2',
+        onClick: () => {
+          this.handleClick()
+        }
+      },
+      buttonText
+    )
+  }
 }
 
-const p = lazyAdd(3, 4)
-p.then(resolveCallback, rejectCallback)
-
-lazyAdd("non", "number").then(resolveCallback, rejectCallback)
+const domContainer = document.getElementById('react_root')
+ReactDOM.render(
+  React.createElement(ClickButton),
+  domContainer
+)
